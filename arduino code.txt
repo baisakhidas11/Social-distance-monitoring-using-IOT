@@ -1,0 +1,91 @@
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const int trig1pin = 7; 
+const int echo1pin = 6;
+const int trig2pin = 8;
+const int echo2pin = 6;
+const int led1pin = 13; 
+const int led2pin = 10;
+const int buzzPin = 9; 
+long duration; 
+int distance;
+
+void setup() {
+  lcd.begin(16, 2);
+  lcd.setCursor(0,0);
+  lcd.print("Social Distance");
+  
+  Serial.begin(9600); 
+  pinMode(trig1pin, OUTPUT); 
+  pinMode(echo1pin, INPUT);
+  pinMode(led1pin, OUTPUT); 
+  pinMode(buzzPin, OUTPUT);
+  
+  pinMode(trig2pin, OUTPUT); 
+  pinMode(echo2pin, INPUT);
+  pinMode(led2pin, OUTPUT); 
+  pinMode(buzzPin, OUTPUT);
+}
+
+void loop() {
+  // set the cursor to column 0, line 1
+  lcd.setCursor(0, 1);
+  
+  digitalWrite(trig1pin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig1pin, HIGH); 
+  delayMicroseconds(1000);
+  digitalWrite(trig1pin, LOW);
+  duration = pulseIn(echo1pin, HIGH); 
+  distance= duration*0.034/2;
+  Serial.println("Distance 1: "); 
+  Serial.println(distance);
+  delay(500);
+
+  if (distance <= 200 && distance >= 0) 
+  { 
+  	digitalWrite(led1pin, HIGH); 
+	digitalWrite(buzzPin, HIGH);
+    lcd.setCursor(0,1);
+    lcd.print("Alert! Alert!");
+	
+  } 
+  else 
+  {
+	digitalWrite(led1pin, LOW); 
+	digitalWrite(buzzPin, LOW);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Social Distance");
+  }
+  
+  digitalWrite(trig2pin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig2pin, HIGH); 
+  delayMicroseconds(1000);
+  digitalWrite(trig2pin, LOW);
+  duration = pulseIn(echo2pin, HIGH); 
+  distance= duration*0.034/2;
+  Serial.println("Distance 2: "); 
+  Serial.println(distance);
+  delay(500);
+
+  if (distance <= 150 && distance >= 0) 
+  { 
+  	digitalWrite(led2pin, HIGH); 
+	digitalWrite(buzzPin, HIGH);
+    lcd.setCursor(0,1);
+    lcd.print("Alert! Alert!");
+	
+  } 
+  else 
+  {
+	digitalWrite(led2pin, LOW); 
+	digitalWrite(buzzPin, LOW); 
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Social Distance");
+  }
+
+}
